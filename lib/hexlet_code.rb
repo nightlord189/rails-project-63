@@ -24,33 +24,51 @@ module HexletCode
       @action = action
       @obj = obj
       @form_content = ""
+      @submit_text = ""
     end
 
     def input(name, attrs = {})
       puts "input #{name} #{attrs}"
+
+      @form_content += Tag.build("label", for: name) { name.capitalize }
+
       value = @obj.public_send(name)
 
       tag_attrs = { "name": name }
 
       case attrs[:as]
       when :text
-        tag_attrs = tag_attrs.merge({ "cols": 20, "rows": 40 })
-        tag_attrs = HexletCode.add_tag_attributes tag_attrs, attrs
-        rendered = Tag.build("textarea", tag_attrs) { value }
+        build_textarea(value, tag_attrs, attrs)
       when nil
-        tag_attrs["type"] = "text"
-        tag_attrs["value"] = value
-        tag_attrs = HexletCode.add_tag_attributes tag_attrs, attrs
-        rendered = Tag.build("input", tag_attrs)
+        build_input(value, tag_attrs, attrs)
       else
         raise "Unknown input type: #{attrs[:as]}"
       end
+    end
 
-      @form_content += rendered
+    def submit(submit_text)
+      @submit_text = submit_text
     end
 
     def build
+      @submit_text = "Save" if @submit_text == ""
+      @form_content += Tag.build("input", type: "submit", value: @submit_text)
       Tag.build("form", action: action, method: "post") { @form_content }
+    end
+
+    private
+
+    def build_input(value, tag_attrs, attrs = {})
+      tag_attrs["type"] = "text"
+      tag_attrs["value"] = value
+      tag_attrs = HexletCode.merge_tag_attributes tag_attrs, attrs
+      @form_content += Tag.build("input", tag_attrs)
+    end
+
+    def build_textarea(value, tag_attrs, attrs = {})
+      tag_attrs = tag_attrs.merge({ "cols": 20, "rows": 40 })
+      tag_attrs = HexletCode.merge_tag_attributes tag_attrs, attrs
+      @form_content += Tag.build("textarea", tag_attrs) { value }
     end
   end
 
@@ -76,7 +94,7 @@ module HexletCode
     end
   end
 
-  def self.add_tag_attributes(current_attrs, all_attrs)
+  def self.merge_tag_attributes(current_attrs, all_attrs)
     all_attrs.each do |key, value|
       next if key == :as
 
