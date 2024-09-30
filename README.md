@@ -9,7 +9,7 @@ Gem for generating an html form. Test Project #1 by Ruby profession on hexlet.io
 User = Struct.new(:name, :job, :gender, keyword_init: true)
 user = User.new name: 'rob', job: 'hexlet', gender: 'm'
 
-HexletCode.form_for user do |f|
+HexletCode.form_for user, url: '/action' do |f|
   f.input :name
   f.input :job, as: :text
   f.submit 'Send'
@@ -18,7 +18,7 @@ end
 
 will return
 ```html
-<form action="#" method="post">
+<form action="/action" method="post">
     <label for="name">Name</label>
     <input name="name" type="text" value="rob">
     <label for="job">Job</label>
@@ -26,3 +26,7 @@ will return
     <input type="submit" value="Send">
 </form>
 ```
+You can customize:
++ inputs and its options
++ url of the form
++ text of the Submit button
