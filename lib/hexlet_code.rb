@@ -46,7 +46,7 @@ module HexletCode
       end
     end
 
-    def submit(submit_text)
+    def submit(submit_text = "")
       @submit_text = submit_text
     end
 
