@@ -16,12 +16,7 @@ class TestHexletCode < Minitest::Test
       f.submit "Wow"
     end
 
-    expected = '<form action="#" method="post"><label for="name">Name</label>' \
-    '<input name="name" type="text" value="rob">' \
-    '<label for="job">Job</label><input name="job" type="text" value="hexlet">' \
-    '<input type="submit" value="Wow"></form>'
-
-    assert_equal expected, result
+    assert_equal read_fixture("custom_submit_text.html"), result
   end
 
   def test_form_additional_attrs
@@ -30,12 +25,7 @@ class TestHexletCode < Minitest::Test
       f.input :job, as: :text
     end
 
-    expected = '<form action="#" method="post"><label for="name">Name</label>' \
-    '<input name="name" type="text" value="rob" class="user-input">' \
-    '<label for="job">Job</label><textarea name="job" cols="20" rows="40">hexlet</textarea>' \
-    '<input type="submit" value="Save"></form>'
-
-    assert_equal expected, result
+    assert_equal read_fixture("additional_attributes.html"), result
   end
 
   def test_form_default_attrs
@@ -43,11 +33,7 @@ class TestHexletCode < Minitest::Test
       f.input :job, as: :text, rows: 50, cols: 50
     end
 
-    expected = '<form action="#" method="post"><label for="job">Job</label>' \
-    '<textarea name="job" cols="50" rows="50">hexlet</textarea>' \
-    '<input type="submit" value="Save"></form>'
-
-    assert_equal expected, result
+    assert_equal read_fixture("default_attributes.html"), result
   end
 
   def test_form_field_not_exists
@@ -63,18 +49,17 @@ class TestHexletCode < Minitest::Test
 
   def test_empty_form
     result = HexletCode.form_for(nil)
-    assert_equal "<form action=\"#\" method=\"post\"><input type=\"submit\" value=\"Save\"></form>", result
+    assert_equal read_fixture("empty_form.html"), result
   end
 
   def test_form_with_attrs
     result = HexletCode.form_for(nil, method: "get", class: "hexlet-form")
-    assert_equal "<form action=\"#\" method=\"get\" class=\"hexlet-form\"><input type=\"submit\" value=\"Save\"></form>", result
+    assert_equal read_fixture("form_with_attributes.html"), result
   end
-
 
   def test_form_with_url
     result = HexletCode.form_for(nil, url: "/users")
-    assert_equal "<form action=\"/users\" method=\"post\"><input type=\"submit\" value=\"Save\"></form>", result
+    assert_equal read_fixture("form_with_url.html"), result
   end
 end
 
