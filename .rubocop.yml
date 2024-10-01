@@ -1,11 +1,17 @@
 AllCops:
-  TargetRubyVersion: 3.0
+  NewCops: enable
+  TargetRubyVersion: 3.2.2
 
 Style/StringLiterals:
-  EnforcedStyle: double_quotes
+  Enabled: true
+  EnforcedStyle: single_quotes
 
 Style/StringLiteralsInInterpolation:
-  EnforcedStyle: double_quotes
+  Enabled: true
+  EnforcedStyle: single_quotes
+
+Style/HashSyntax:
+  Enabled: true
 
 Metrics/MethodLength:
   Enabled: false

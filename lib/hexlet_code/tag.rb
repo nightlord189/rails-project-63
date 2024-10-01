@@ -8,9 +8,9 @@ class Tag
       attrs_strs << "#{key}=\"#{value}\""
     end
 
-    attrs_content = attrs_strs.any? ? " #{attrs_strs.join(" ")}" : ""
+    attrs_content = attrs_strs.any? ? " #{attrs_strs.join(' ')}" : ''
 
-    content = block_given? ? yield : ""
+    content = block_given? ? yield : ''
 
     return "<#{tag_name}#{attrs_content}>" if single_tag?(tag_name)
 

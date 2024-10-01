@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "hexlet_code/version"
-require_relative "hexlet_code/form_builder"
+require_relative 'hexlet_code/version'
+require_relative 'hexlet_code/form_builder'
 
 # HexletCode - main module for the form generator
 module HexletCode
