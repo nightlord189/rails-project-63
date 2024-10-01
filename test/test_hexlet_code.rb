@@ -66,6 +66,12 @@ class TestHexletCode < Minitest::Test
     assert_equal "<form action=\"#\" method=\"post\"><input type=\"submit\" value=\"Save\"></form>", result
   end
 
+  def test_form_with_attrs
+    result = HexletCode.form_for(nil, method: "get", class: "hexlet-form")
+    assert_equal "<form action=\"#\" method=\"get\" class=\"hexlet-form\"><input type=\"submit\" value=\"Save\"></form>", result
+  end
+
+
   def test_form_with_url
     result = HexletCode.form_for(nil, url: "/users")
     assert_equal "<form action=\"/users\" method=\"post\"><input type=\"submit\" value=\"Save\"></form>", result

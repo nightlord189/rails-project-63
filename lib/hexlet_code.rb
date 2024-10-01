@@ -7,10 +7,7 @@ module HexletCode
   class Error < StandardError; end
 
   def self.form_for(obj, options = {})
-    action = !options.key?(:url) ? "#" : options[:url]
-    Tag.build("form", action: action, method: "post")
-
-    builder = FormBuilder.new(obj, action)
+    builder = FormBuilder.new(obj, options)
     yield(builder) if block_given?
 
     builder.build
@@ -18,13 +15,32 @@ module HexletCode
 
   # FormBuilder - builds a form
   class FormBuilder
-    attr_reader :action
-
-    def initialize(obj, action)
-      @action = action
+    def initialize(obj, form_attrs)
+      @form_attrs = FormBuilder.transform_form_attrs(form_attrs)
       @obj = obj
       @form_content = ""
       @submit_text = ""
+    end
+
+    def self.transform_form_attrs(all_attrs)
+      action = if all_attrs.key?(:url)
+                 all_attrs[:url]
+               elsif all_attrs.key?(:action)
+                 all_attrs[:action]
+               else
+                 "#"
+               end
+
+      method = all_attrs.key?(:method) ? all_attrs[:method] : "post"
+
+      form_attrs = { action: action, method: method }
+      all_attrs.each do |key, value|
+        next if [:url].include?(key)
+
+        form_attrs[key] = value
+      end
+
+      form_attrs
     end
 
     def input(name, attrs = {})
@@ -53,7 +69,7 @@ module HexletCode
     def build
       @submit_text = "Save" if @submit_text == ""
       @form_content += Tag.build("input", type: "submit", value: @submit_text)
-      Tag.build("form", action: action, method: "post") { @form_content }
+      Tag.build("form", @form_attrs) { @form_content }
     end
 
     private
