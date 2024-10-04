@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
-require_relative 'tag'
 require_relative 'util'
+require_relative 'inputs/base_input'
+require_relative 'inputs/string_input'
+require_relative 'inputs/text_input'
+autoload(:Tag, 'hexlet_code/tag.rb')
 
 # FormBuilder - builds a form
 class FormBuilder
-  def initialize(obj, form_attrs)
+  def initialize(entity, form_attrs)
     @form_attrs = FormBuilder.transform_form_attrs(form_attrs)
-    @obj = obj
+    @entity= entity
     @form_content = ''
     @submit_text = ''
   end
@@ -33,23 +36,17 @@ class FormBuilder
     form_attrs
   end
 
-  def input(name, attrs = {})
-    puts "input #{name} #{attrs}"
+  def input(name, attributes = {})
+    puts "input #{name} #{attributes}"
+
+    value = @entity.public_send(name)
 
     @form_content += Tag.build('label', for: name) { name.capitalize }
 
-    value = @obj.public_send(name)
-
-    tag_attrs = { name: }
-
-    case attrs[:as]
-    when :text
-      build_textarea(value, tag_attrs, attrs)
-    when nil
-      build_input(value, tag_attrs, attrs)
-    else
-      raise "Unknown input type: #{attrs[:as]}"
-    end
+    input_name = "#{attributes.fetch(:as, 'string').to_s.capitalize}Input"
+    input_class = HexletCode::Inputs.const_get(input_name)
+    input_instance = input_class.new(name, value, attributes)
+    @form_content += input_instance.build
   end
 
   def submit(submit_text = '')
@@ -60,20 +57,5 @@ class FormBuilder
     @submit_text = 'Save' if @submit_text == ''
     @form_content += Tag.build('input', type: 'submit', value: @submit_text)
     Tag.build('form', @form_attrs) { @form_content }
-  end
-
-  private
-
-  def build_input(value, tag_attrs, attrs = {})
-    tag_attrs['type'] = 'text'
-    tag_attrs['value'] = value
-    tag_attrs = merge_tag_attributes tag_attrs, attrs
-    @form_content += Tag.build('input', tag_attrs)
-  end
-
-  def build_textarea(value, tag_attrs, attrs = {})
-    tag_attrs = tag_attrs.merge({ cols: 20, rows: 40 })
-    tag_attrs = merge_tag_attributes tag_attrs, attrs
-    @form_content += Tag.build('textarea', tag_attrs) { value }
   end
 end

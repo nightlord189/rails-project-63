@@ -2,6 +2,8 @@
 
 require 'test_helper'
 
+autoload(:Tag, 'hexlet_code/tag.rb')
+
 class TestHexletCode < Minitest::Test
   User = Struct.new(:name, :job, :gender, keyword_init: true)
 
