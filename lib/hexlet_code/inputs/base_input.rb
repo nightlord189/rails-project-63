@@ -12,4 +12,3 @@ module HexletCode
     end
   end
 end
-

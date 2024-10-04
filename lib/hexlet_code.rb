@@ -5,6 +5,7 @@ require_relative 'hexlet_code/version'
 # HexletCode - main module for the form generator
 module HexletCode
   autoload(:FormBuilder, 'hexlet_code/form_builder')
+  autoload(:FormRender, 'hexlet_code/form_render')
 
   class Error < StandardError; end
 
@@ -12,6 +13,6 @@ module HexletCode
     builder = FormBuilder.new(entity, options)
     yield(builder) if block_given?
 
-    builder.build
+    FormRender.render_html(builder)
   end
 end
