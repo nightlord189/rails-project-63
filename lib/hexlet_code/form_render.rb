@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 autoload(:Tag, 'hexlet_code/tag')
 
 class FormRender
@@ -13,6 +14,11 @@ class FormRender
     end
 
     form_content += Tag.build('input', type: 'submit', value: form_builder.submit_text)
+
+    build_form(form_builder, form_content)
+  end
+
+  def self.build_form(form_builder, form_content)
     final_form_attributes = { action: form_builder.action,
                               method: form_builder.method }.merge(form_builder.form_attributes)
     Tag.build('form', final_form_attributes) { form_content }
