@@ -1,79 +1,52 @@
 # frozen_string_literal: true
 
-require_relative 'tag'
 require_relative 'util'
+require_relative 'inputs/base_input'
+require_relative 'inputs/string_input'
+require_relative 'inputs/text_input'
 
 # FormBuilder - builds a form
 class FormBuilder
-  def initialize(obj, form_attrs)
-    @form_attrs = FormBuilder.transform_form_attrs(form_attrs)
-    @obj = obj
-    @form_content = ''
-    @submit_text = ''
-  end
+  attr_reader :action, :method, :form_attributes, :submit_text, :inputs
 
-  def self.transform_form_attrs(all_attrs)
-    action = if all_attrs.key?(:url)
-               all_attrs[:url]
-             elsif all_attrs.key?(:action)
-               all_attrs[:action]
+  def initialize(entity, attributes = {})
+    action = if attributes.key?(:url)
+               attributes[:url]
+             elsif attributes.key?(:action)
+               attributes[:action]
              else
                '#'
              end
+    method = attributes.key?(:method) ? attributes[:method] : 'post'
+    filtered_attributes = exclude_keys_from_hash(attributes, :url)
 
-    method = all_attrs.key?(:method) ? all_attrs[:method] : 'post'
+    @entity = entity
 
-    form_attrs = { action:, method: }
-    all_attrs.each do |key, value|
-      next if [:url].include?(key)
-
-      form_attrs[key] = value
-    end
-
-    form_attrs
+    @action = action
+    @method = method
+    @form_attributes = filtered_attributes
+    @submit_text = 'Save'
+    @inputs = []
   end
 
-  def input(name, attrs = {})
-    puts "input #{name} #{attrs}"
+  def input(name, attributes = {})
+    puts "input #{name} #{attributes}"
 
-    @form_content += Tag.build('label', for: name) { name.capitalize }
-
-    value = @obj.public_send(name)
-
-    tag_attrs = { name: }
-
-    case attrs[:as]
-    when :text
-      build_textarea(value, tag_attrs, attrs)
-    when nil
-      build_input(value, tag_attrs, attrs)
-    else
-      raise "Unknown input type: #{attrs[:as]}"
-    end
+    value = @entity.public_send(name)
+    inputs << Input.new(name, value, attributes)
   end
 
-  def submit(submit_text = '')
+  def submit(submit_text = 'Save')
     @submit_text = submit_text
   end
+end
 
-  def build
-    @submit_text = 'Save' if @submit_text == ''
-    @form_content += Tag.build('input', type: 'submit', value: @submit_text)
-    Tag.build('form', @form_attrs) { @form_content }
-  end
+class Input
+  attr_accessor :name, :value, :attributes
 
-  private
-
-  def build_input(value, tag_attrs, attrs = {})
-    tag_attrs['type'] = 'text'
-    tag_attrs['value'] = value
-    tag_attrs = merge_tag_attributes tag_attrs, attrs
-    @form_content += Tag.build('input', tag_attrs)
-  end
-
-  def build_textarea(value, tag_attrs, attrs = {})
-    tag_attrs = tag_attrs.merge({ cols: 20, rows: 40 })
-    tag_attrs = merge_tag_attributes tag_attrs, attrs
-    @form_content += Tag.build('textarea', tag_attrs) { value }
+  def initialize(name, value, attributes = {})
+    @name = name
+    @value = value
+    @attributes = attributes
   end
 end

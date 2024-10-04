@@ -8,3 +8,11 @@ def merge_tag_attributes(current_attrs, all_attrs)
   end
   current_attrs
 end
+
+def exclude_keys_from_hash(hash, *keys_to_exclude)
+  result = {}
+  hash.each do |key, value|
+    result[key] = value unless keys_to_exclude.include?(key)
+  end
+  result
+end
