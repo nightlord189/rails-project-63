@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+autoload(:Tag, 'hexlet_code/tag')
 
 class FormRender
   def self.render_html(form_builder)
