@@ -1,52 +1,33 @@
 # frozen_string_literal: true
 
-require_relative 'util'
 require_relative 'inputs/base_input'
 require_relative 'inputs/string_input'
 require_relative 'inputs/text_input'
 
-# FormBuilder - builds a form
-class FormBuilder
-  attr_reader :action, :method, :form_attributes, :submit_text, :inputs
+module HexletCode
+  class FormBuilder
+    attr_reader :form_body
 
-  def initialize(entity, attributes = {})
-    action = if attributes.key?(:url)
-               attributes[:url]
-             elsif attributes.key?(:action)
-               attributes[:action]
-             else
-               '#'
-             end
-    method = attributes.key?(:method) ? attributes[:method] : 'post'
-    filtered_attributes = exclude_keys_from_hash(attributes, :url)
+    def initialize(entity, attributes = {})
+      action = attributes.fetch(:url, '#')
+      method = attributes.fetch(:method, 'post')
 
-    @entity = entity
+      @entity = entity
 
-    @action = action
-    @method = method
-    @form_attributes = filtered_attributes
-    @submit_text = 'Save'
-    @inputs = []
-  end
+      @form_body = {
+        inputs: [],
+        submit: { options: nil },
+        form_options: { action:, method: }.merge(attributes.except(:url, :method))
+      }
+    end
 
-  def input(name, attributes = {})
-    puts "input #{name} #{attributes}"
+    def input(name, attributes = {})
+      value = @entity.public_send(name)
+      @form_body[:inputs] << { name:, value:, attributes: }
+    end
 
-    value = @entity.public_send(name)
-    inputs << Input.new(name, value, attributes)
-  end
-
-  def submit(submit_text = 'Save')
-    @submit_text = submit_text
-  end
-end
-
-class Input
-  attr_accessor :name, :value, :attributes
-
-  def initialize(name, value, attributes = {})
-    @name = name
-    @value = value
-    @attributes = attributes
+    def submit(submit_text = 'Save')
+      @form_body[:submit][:text] = submit_text
+    end
   end
 end
