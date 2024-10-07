@@ -26,7 +26,7 @@ module HexletCode
       @form_body[:inputs] << { name:, value:, attributes: }
     end
 
-    def submit(submit_text)
+    def submit(submit_text = 'Save')
       @form_body[:submit][:text] = submit_text
     end
   end
