@@ -6,8 +6,15 @@ module HexletCode
       def initialize(name, value, attributes = {})
         @name = name
         @value = value
-        @attributes = exclude_keys_from_hash(attributes, :as)
-        puts "input initialized, name: #{@name}, value: #{@value}, attributes: #{@attributes}"
+        @attributes = attributes.except(:as)
+      end
+
+      def self.exclude_keys_from_hash(hash, *keys_to_exclude)
+        result = {}
+        hash.each do |key, value|
+          result[key] = value unless keys_to_exclude.include?(key)
+        end
+        result
       end
     end
   end

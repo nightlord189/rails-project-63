@@ -6,6 +6,7 @@ require_relative 'hexlet_code/version'
 module HexletCode
   autoload(:FormBuilder, 'hexlet_code/form_builder')
   autoload(:FormRender, 'hexlet_code/form_render')
+  autoload(:Tag, 'hexlet_code/tag')
 
   class Error < StandardError; end
 
