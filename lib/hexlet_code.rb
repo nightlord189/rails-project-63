@@ -2,7 +2,6 @@
 
 require_relative 'hexlet_code/version'
 
-# HexletCode - main module for the form generator
 module HexletCode
   autoload(:FormBuilder, 'hexlet_code/form_builder')
   autoload(:FormRender, 'hexlet_code/form_render')

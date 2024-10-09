@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'inputs'
+
 module HexletCode
   autoload(:Tag, 'hexlet_code/tag')
 

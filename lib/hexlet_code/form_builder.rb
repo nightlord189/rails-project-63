@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'inputs/base_input'
-require_relative 'inputs/string_input'
-require_relative 'inputs/text_input'
-
 module HexletCode
   class FormBuilder
     attr_reader :form_body
