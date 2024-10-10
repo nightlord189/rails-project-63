@@ -6,6 +6,7 @@ module HexletCode
   autoload(:FormBuilder, 'hexlet_code/form_builder')
   autoload(:FormRender, 'hexlet_code/form_render')
   autoload(:Tag, 'hexlet_code/tag')
+  autoload(:Inputs, 'hexlet_code/inputs')
 
   class Error < StandardError; end
 
